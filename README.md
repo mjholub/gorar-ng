@@ -10,18 +10,10 @@ go install https://github.com/154pinkchairs/gorar-ng@latest
 
 # Usage
 
-## Extract RAR
-```go
-RarExtractor("Unrarme.rar", "./")
+## Extract files
+
 ```
-**Multi Archive RAR is supported.**(Do not itirate,only pass first file)
-
-
-## Extract Zip
-
-
-```go
-ZipExtractor("Unzipme.zip","./")
+gorar -i <source_file.(zip|rar)> -o <destination>
 ```
 
 ---
