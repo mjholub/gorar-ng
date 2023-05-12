@@ -2,7 +2,6 @@ package iohandlers
 
 import (
 	"bufio"
-	"os"
 )
 
 type DirHandler interface {

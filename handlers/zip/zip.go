@@ -1,5 +1,9 @@
 package ziphandlers
 
-type ZipHandler interface {
-	Extract(destination string) error
+import (
+	"github.com/154pinkchairs/gorar-ng/handlers/io"
+)
+
+type Handler interface {
+	Extract(*iohandlers.Dir) error
 }

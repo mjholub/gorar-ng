@@ -14,13 +14,13 @@ import (
 )
 
 type ZipArchive struct {
-	path     string
+	Path     string
 	files    []string
 	password string
 }
 
-func (z *ZipArchive) Extract(destination iohandlers.Dir) error {
-	r, err := zip.OpenReader(z.path)
+func (z *ZipArchive) Extract(destination *iohandlers.Dir) error {
+	r, err := zip.OpenReader(z.Path)
 	if err != nil {
 		return err
 	}
@@ -31,7 +31,7 @@ func (z *ZipArchive) Extract(destination iohandlers.Dir) error {
 
 func unzipAll(
 	r *zip.Reader,
-	destination iohandlers.Dir,
+	destination *iohandlers.Dir,
 ) error {
 	for _, zf := range r.File {
 		if err := unzipFile(zf, destination); err != nil {
@@ -44,7 +44,7 @@ func unzipAll(
 
 func unzipFile(
 	zf *zip.File,
-	destination iohandlers.Dir,
+	destination *iohandlers.Dir,
 ) error {
 	destFile := iohandlers.File{
 		// Clean the name for security's sake (avoid Zip Slip vulnerability)

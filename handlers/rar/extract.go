@@ -6,44 +6,54 @@ import (
 	"io"
 	"path/filepath"
 
+	iohandlers "github.com/154pinkchairs/gorar-ng/handlers/io"
 	"github.com/nwaples/rardecode"
 )
 
-type RarArchive struct {
-	path     string
+type Archive struct {
+	Path     string
 	files    []string
 	password string
 }
 
 // Extract extracts the rar archive to the destination path
-func (r *RarArchive) Extract(destination string) error {
-	rr, err := rardecode.OpenReader(r.path, r.password)
+func (r *Archive) Extract(destination *iohandlers.Dir) error {
+	rr, err := rardecode.OpenReader(r.Path, r.password)
 	if err != nil {
 		return fmt.Errorf("read: failed to create reader: %v", err)
 	}
 	bufRr := bufio.NewReader(rr)
 
-	// sum := 1
 	for {
-		// sum += sum
 		header, err := rr.Next()
 		if err == io.EOF {
 			break
 		}
 
 		if header.IsDir {
-			err = Mkdir(filepath.Join(destination, header.Name))
+			d := &iohandlers.Dir{
+				Path: filepath.Join(destination.Path, header.Name),
+			}
+			err = d.Create()
 			if err != nil {
 				return err
 			}
 			continue
 		}
-		err = Mkdir(filepath.Dir(filepath.Join(destination, header.Name)))
+		d := iohandlers.Dir{
+			Path: filepath.Dir(filepath.Join(destination.Path, header.Name)),
+		}
+		err = d.Create()
 		if err != nil {
 			return err
 		}
 
-		err = WriteNewFile(filepath.Join(destination, header.Name), bufRr, header.Mode())
+		f := iohandlers.File{
+			Path:        filepath.Join(destination.Path, header.Name),
+			Permissions: header.Mode(),
+		}
+
+		err = f.WriteNew(bufRr)
 		if err != nil {
 			return err
 		}
